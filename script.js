@@ -45,7 +45,8 @@ function successErrorCallGeolocation(position) {
 function mapClickHandler(mapEvent, map) {
   const { lat, lng } = mapEvent.latlng;
   const coords = [lat, lng];
-  addMarkerToMap(coords, map, "You click here");
+  showForm();
+  //   addMarkerToMap(coords, map, "You click here");
 }
 
 function addMarkerToMap(coords, map, popupText, popupClassName) {
@@ -61,4 +62,9 @@ function addMarkerToMap(coords, map, popupText, popupClassName) {
       }).setContent(popupText)
     )
     .openPopup();
+}
+
+function showForm() {
+  form.classList.remove("hidden");
+  inputDistance.focus();
 }
