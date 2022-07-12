@@ -11,24 +11,21 @@ const inputDuration = document.querySelector(".form__input--duration");
 const inputCadence = document.querySelector(".form__input--cadence");
 const inputElevation = document.querySelector(".form__input--elevation");
 
-// variables
-let longitude, latitude;
-let map;
-
 // getting the location of the user
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(
-    successCallGeolocation,
-    errorCallGeolocation
+    successErrorCallGeolocation,
+    successErrorCallGeolocation
   );
 }
 
-// function will be called when the geolocation is available
-function successCallGeolocation(position) {
-  latitude = position.coords.latitude;
-  longitude = position.coords.longitude;
-  const coords = [latitude, longitude];
-  map = L.map("map").setView(coords, 13);
+// function will be called when success or error is triggered
+function successErrorCallGeolocation(position) {
+  const latitude = position?.coords?.latitude; 
+  const longitude = position?.coords?.longitude;
+  const coords = [latitude || 35.68, longitude || 51.36]; //for showing the default latitude and longitude
+  console.log(coords);
+  const map = L.map("map").setView(coords, latitude ? 13 : 5);
 
   L.tileLayer("https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
     attribution:
@@ -37,21 +34,12 @@ function successCallGeolocation(position) {
 
   L.marker(coords)
     .addTo(map)
-    .bindPopup(" 🗺️ Your Current Location ")
-    .openPopup();
-}
-// function will be called when the geolocation is not available
-function errorCallGeolocation() {
-  const coords = [35.68, 51.36];
-  map = L.map("map").setView(coords, 10);
-
-  L.tileLayer("https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(map);
-
-  L.marker(coords)
-    .addTo(map)
-    .bindPopup(" 🗺️ Your Current Location Not Available<br> Fine it Manually.")
+    .bindPopup(
+      `  ${
+        position
+          ? "🗺️ Your Current Location "
+          : "🗺️ Your Current Location Not Available<br> Fine it Manually"
+      } `
+    )
     .openPopup();
 }
