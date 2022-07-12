@@ -70,6 +70,11 @@ function showForm() {
   form.classList.remove("hidden");
   inputDistance.focus();
 }
+function hideForm(){
+    form.classList.add("hidden");
+}
+
+
 
 function formSubmitHandler(e) {
     e.preventDefault()
