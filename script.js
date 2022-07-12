@@ -36,7 +36,7 @@ function successErrorCallGeolocation(position) {
 
   addMarkerToMap(
     coords,
-    
+
     position
       ? "🗺️ Your Current Location "
       : "🗺️ Your Current Location Not Available<br> Fine it Manually"
@@ -48,10 +48,9 @@ function successErrorCallGeolocation(position) {
 function mapClickHandler(mapE) {
   mapEvent = mapE;
   showForm();
-  
 }
 
-function addMarkerToMap(coords,  popupText, popupClassName) {
+function addMarkerToMap(coords, popupText, popupClassName) {
   L.marker(coords)
     .addTo(map)
     .bindPopup(
@@ -70,14 +69,20 @@ function showForm() {
   form.classList.remove("hidden");
   inputDistance.focus();
 }
-function hideForm(){
-    form.classList.add("hidden");
+
+
+function hideForm() {
+  form.classList.add("hidden");
 }
 
 
+function clearInputs() {
+  inputDistance.value = inputDuration.value = inputCadence.value = "";
+}
+
 
 function formSubmitHandler(e) {
-    e.preventDefault()
+  e.preventDefault();
 }
 
 // Events
