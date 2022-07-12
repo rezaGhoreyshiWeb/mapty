@@ -11,6 +11,9 @@ const inputDuration = document.querySelector(".form__input--duration");
 const inputCadence = document.querySelector(".form__input--cadence");
 const inputElevation = document.querySelector(".form__input--elevation");
 
+// global variables
+let map, mapEvent;
+
 // getting the location of the user
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(
@@ -24,7 +27,7 @@ function successErrorCallGeolocation(position) {
   const latitude = position?.coords?.latitude;
   const longitude = position?.coords?.longitude;
   const coords = [latitude || 35.68, longitude || 51.36]; //for showing the default latitude and longitude
-  const map = L.map("map").setView(coords, latitude ? 13 : 5);
+  map = L.map("map").setView(coords, latitude ? 13 : 5);
 
   L.tileLayer("https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
     attribution:
@@ -33,23 +36,22 @@ function successErrorCallGeolocation(position) {
 
   addMarkerToMap(
     coords,
-    map,
+    
     position
       ? "🗺️ Your Current Location "
       : "🗺️ Your Current Location Not Available<br> Fine it Manually"
   );
 
-  map.on("click", (mapEvent) => mapClickHandler(mapEvent, map));
+  map.on("click", mapClickHandler);
 }
 
-function mapClickHandler(mapEvent, map) {
-  const { lat, lng } = mapEvent.latlng;
-  const coords = [lat, lng];
+function mapClickHandler(mapE) {
+  mapEvent = mapE;
   showForm();
-  //   addMarkerToMap(coords, map, "You click here");
+  
 }
 
-function addMarkerToMap(coords, map, popupText, popupClassName) {
+function addMarkerToMap(coords,  popupText, popupClassName) {
   L.marker(coords)
     .addTo(map)
     .bindPopup(
@@ -68,3 +70,11 @@ function showForm() {
   form.classList.remove("hidden");
   inputDistance.focus();
 }
+
+function formSubmitHandler(e) {
+    e.preventDefault()
+}
+
+// Events
+
+form.addEventListener("submit", formSubmitHandler);
