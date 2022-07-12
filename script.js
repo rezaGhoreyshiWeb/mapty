@@ -1,5 +1,43 @@
 "use strict";
 
+class Workouts {
+  date = new Date();
+  id = (Date.now() + "").slice(-10);
+  constructor(coords, distance, duration) {
+    this.coords = coords; // [lat,lng]
+    this.distance = distance; // in km
+    this.duration = duration; // in min
+  }
+}
+
+class Running extends Workouts {
+  constructor(coords, distance, duration, cadence) {
+    super(coords, distance, duration);
+    this.cadence = cadence;
+    this.calcPace();
+  }
+
+  calcPace() {
+    // min/km
+    this.pace = this.duration / this.distance;
+    return this.pace;
+  }
+}
+
+class Cycling extends Workouts {
+  constructor(coords, distance, duration, elevationGain) {
+    super(coords, distance, duration);
+    this.elevationGain = elevationGain;
+  }
+
+  calcSpeed() {
+    // km/h
+    this.speed = this.distance / (this.duration / 60);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////
+
 class App {
   #map;
   #mapEvent;
@@ -69,7 +107,7 @@ class App {
   }
 
   _addMarkerToMap(popupText, popupClassName) {
-    L.marker(this.coords)
+    L.marker(this.#coords)
       .addTo(this.#map)
       .bindPopup(
         L.popup({
