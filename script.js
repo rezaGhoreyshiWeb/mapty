@@ -3,8 +3,8 @@
 class App {
   #map;
   #mapEvent;
+  #coords;
   constructor() {
-    this.coords = [];
     this.months = [
       "January",
       "February",
@@ -29,7 +29,7 @@ class App {
     this.inputElevation = document.querySelector(".form__input--elevation");
 
     // events
-    this.form.addEventListener("submit", this._formSubmitHandler.bind(this));
+    this.form.addEventListener("submit", this._newWorkout.bind(this));
     this.inputType.addEventListener(
       "change",
       this._toggleElevationField.bind(this)
@@ -51,8 +51,8 @@ class App {
   _loadMap(position) {
     const latitude = position?.coords?.latitude;
     const longitude = position?.coords?.longitude;
-    this.coords = [latitude || 35.68, longitude || 51.36]; //for showing the default latitude and longitude
-    this.#map = L.map("map").setView(this.coords, latitude ? 13 : 5);
+    this.#coords = [latitude || 35.68, longitude || 51.36]; //for showing the default latitude and longitude
+    this.#map = L.map("map").setView(this.#coords, latitude ? 13 : 5);
 
     L.tileLayer("https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
       attribution:
@@ -97,7 +97,7 @@ class App {
     this.form.classList.add("hidden");
   }
 
-  _formSubmitHandler(e) {
+  _newWorkout(e) {
     e.preventDefault();
 
     this._clearInputs();
@@ -120,10 +120,6 @@ class App {
       .closest(".form__row")
       .classList.toggle("form__row--hidden");
   }
-
-  //   _newWorkout() {}
 }
 
- const app = new App();
-
- 
+const app = new App();
