@@ -21,7 +21,7 @@ if (navigator.geolocation) {
 
 // function will be called when success or error is triggered
 function successErrorCallGeolocation(position) {
-  const latitude = position?.coords?.latitude; 
+  const latitude = position?.coords?.latitude;
   const longitude = position?.coords?.longitude;
   const coords = [latitude || 35.68, longitude || 51.36]; //for showing the default latitude and longitude
   console.log(coords);
@@ -32,14 +32,21 @@ function successErrorCallGeolocation(position) {
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
 
-  L.marker(coords)
-    .addTo(map)
-    .bindPopup(
-      `  ${
-        position
-          ? "🗺️ Your Current Location "
-          : "🗺️ Your Current Location Not Available<br> Fine it Manually"
-      } `
-    )
-    .openPopup();
+  addMarkerToMap(
+    coords,
+    map,
+    position
+      ? "🗺️ Your Current Location "
+      : "🗺️ Your Current Location Not Available<br> Fine it Manually"
+  );
+
+  map.on("click", mapClickHandler);
+}
+
+function mapClickHandler(mapEvent) {
+  console.log(mapEvent);
+}
+
+function addMarkerToMap(coords, map, text) {
+  L.marker(coords).addTo(map).bindPopup(text).openPopup();
 }
