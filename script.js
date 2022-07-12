@@ -48,6 +48,17 @@ function mapClickHandler(mapEvent, map) {
   addMarkerToMap(coords, map, "You click here");
 }
 
-function addMarkerToMap(coords, map, text) {
-  L.marker(coords).addTo(map).bindPopup(text).openPopup();
+function addMarkerToMap(coords, map, popupText, popupClassName) {
+  L.marker(coords)
+    .addTo(map)
+    .bindPopup(
+      L.popup({
+        maxWidth: 250,
+        minWidth: 100,
+        autoClose: false,
+        closeOnClick: false,
+        className: popupClassName || "",
+      }).setContent(popupText)
+    )
+    .openPopup();
 }
