@@ -42,6 +42,7 @@ class App {
   #map;
   #mapEvent;
   #coords;
+  #workouts = [];
   constructor() {
     this.months = [
       "January",
@@ -138,8 +139,48 @@ class App {
   _newWorkout(e) {
     e.preventDefault();
 
+    const type = this.inputType.value;
+    const distance = +this.inputDistance.value;
+    const duration = +this.inputDuration.value;
+    const { lat, lng } = this.#mapEvent.latlng;
+    this.#coords = [lat, lng];
+    let workout;
+    let popupText;
+    let popupClassName = `${type}-popup`;
+
+    if (type === "running") {
+      const cadence = +this.inputCadence.value;
+      const validInput = this._validateInputs(distance, duration, cadence);
+      if (!validInput) {
+        return alert("Inputs have to be positive Number");
+      }
+
+      workout = new Running(this.#coords, distance, duration, cadence);
+      popupText = `🏃‍♂️ Running on April 14`;
+    }
+
+    if (type === "cycling") {
+      const elevation = +this.inputElevation.value;
+      const validInput = this._validateInputs(distance, duration, elevation);
+
+      if (!validInput) {
+        return alert("Inputs have to be positive Number");
+      }
+      workout = new Cycling(this.#coords, distance, duration, elevation);
+      popupText = `🚴‍♀️ Cycling on April 14`;
+     
+    }
+
+    this.#workouts.push(workout);
+
+    this._addMarkerToMap(popupText, popupClassName);
+
     this._clearInputs();
     this._hideForm();
+  }
+
+  _validateInputs(...inputs) {
+    return inputs.every((inp) => Number.isFinite(inp) && inp > 0);
   }
 
   _clearInputs() {
