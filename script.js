@@ -24,7 +24,6 @@ function successErrorCallGeolocation(position) {
   const latitude = position?.coords?.latitude;
   const longitude = position?.coords?.longitude;
   const coords = [latitude || 35.68, longitude || 51.36]; //for showing the default latitude and longitude
-  console.log(coords);
   const map = L.map("map").setView(coords, latitude ? 13 : 5);
 
   L.tileLayer("https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
@@ -40,11 +39,13 @@ function successErrorCallGeolocation(position) {
       : "🗺️ Your Current Location Not Available<br> Fine it Manually"
   );
 
-  map.on("click", mapClickHandler);
+  map.on("click", (mapEvent) => mapClickHandler(mapEvent, map));
 }
 
-function mapClickHandler(mapEvent) {
-  console.log(mapEvent);
+function mapClickHandler(mapEvent, map) {
+  const { lat, lng } = mapEvent.latlng;
+  const coords = [lat, lng];
+  addMarkerToMap(coords, map, "You click here");
 }
 
 function addMarkerToMap(coords, map, text) {
