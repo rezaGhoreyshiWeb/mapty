@@ -86,6 +86,11 @@ class App {
       this._toggleElevationField.bind(this)
     );
 
+    this.containerWorkouts.addEventListener(
+      "click",
+      this._moveTheMapToPosition.bind(this)
+    );
+
     // starters
     this._getPosition();
   }
@@ -147,8 +152,7 @@ class App {
   _hideForm() {
     this.form.style.display = "none";
     this.form.classList.add("hidden");
-    setTimeout(() =>  this.form.style.display = "grid")
-   
+    setTimeout(() => (this.form.style.display = "grid"));
   }
 
   _newWorkout(e) {
@@ -171,9 +175,9 @@ class App {
       }
 
       workout = new Running(this.#coords, distance, duration, cadence);
-      popupText = `${
-        workout.type === "running" ? "🏃‍♂️" : "🚴‍♀️"
-      } ${workout.description}`;
+      popupText = `${workout.type === "running" ? "🏃‍♂️" : "🚴‍♀️"} ${
+        workout.description
+      }`;
     }
 
     if (type === "cycling") {
@@ -261,6 +265,22 @@ class App {
     this.inputCadence
       .closest(".form__row")
       .classList.toggle("form__row--hidden");
+  }
+
+  _moveTheMapToPosition(e) {
+    const workoutEl = e.target.closest(".workout");
+    if (!workoutEl) return;
+
+    const workout = this.#workouts.find(
+      (work) => work.id === workoutEl.dataset.id
+    );
+
+    this.#map.setView(workout.coords, 10, {
+      animate: true,
+      pan: {
+        duration: 1,
+      },
+    });
   }
 }
 
