@@ -302,6 +302,11 @@ class App {
       },
     });
   }
+
+  _resetAll() {
+    localStorage.removeItem("workouts");
+    location.reload();
+  }
 }
 
 const app = new App();
