@@ -8,13 +8,36 @@ class Workouts {
     this.distance = distance; // in km
     this.duration = duration; // in min
   }
+
+  _setDescription() {
+    // prettier-ignore
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    this.description = `${this.type[0].toUpperCase()}${this.type.slice(1)} on ${
+      months[this.date.getMonth()]
+    } ${this.date.getDate()}`;
+  }
 }
 
 class Running extends Workouts {
+  type = "running";
   constructor(coords, distance, duration, cadence) {
     super(coords, distance, duration);
     this.cadence = cadence;
     this.calcPace();
+    this._setDescription();
   }
 
   calcPace() {
@@ -25,9 +48,12 @@ class Running extends Workouts {
 }
 
 class Cycling extends Workouts {
+  type = "cycling";
   constructor(coords, distance, duration, elevationGain) {
     super(coords, distance, duration);
     this.elevationGain = elevationGain;
+    this.calcSpeed();
+    this._setDescription();
   }
 
   calcSpeed() {
@@ -44,20 +70,6 @@ class App {
   #coords;
   #workouts = [];
   constructor() {
-    this.months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
     // elements
     this.form = document.querySelector(".form");
     this.containerWorkouts = document.querySelector(".workouts");
@@ -133,7 +145,10 @@ class App {
   }
 
   _hideForm() {
+    this.form.style.display = "none";
     this.form.classList.add("hidden");
+    setTimeout(() =>  this.form.style.display = "grid")
+   
   }
 
   _newWorkout(e) {
@@ -156,7 +171,9 @@ class App {
       }
 
       workout = new Running(this.#coords, distance, duration, cadence);
-      popupText = `🏃‍♂️ Running on April 14`;
+      popupText = `${
+        workout.type === "running" ? "🏃‍♂️" : "🚴‍♀️"
+      } ${workout.description}`;
     }
 
     if (type === "cycling") {
@@ -168,15 +185,61 @@ class App {
       }
       workout = new Cycling(this.#coords, distance, duration, elevation);
       popupText = `🚴‍♀️ Cycling on April 14`;
-     
     }
 
     this.#workouts.push(workout);
 
     this._addMarkerToMap(popupText, popupClassName);
+    this._renderWorkout(workout);
 
     this._clearInputs();
     this._hideForm();
+  }
+
+  _renderWorkout(workout) {
+    const html = `
+    <li class="workout workout--${workout.type}" data-id="${workout.id}">
+          <h2 class="workout__title">${workout.description}</h2>
+          <div class="workout__details">
+            <span class="workout__icon">${
+              workout.type === "running" ? "🏃‍♂️" : "🚴‍♀️"
+            }</span>
+            <span class="workout__value">${workout.distance}</span>
+            <span class="workout__unit">km</span>
+          </div>
+          <div class="workout__details">
+            <span class="workout__icon">⏱</span>
+            <span class="workout__value">${workout.duration}</span>
+            <span class="workout__unit">min</span>
+          </div>
+          <div class="workout__details">
+            <span class="workout__icon">⚡️</span>
+            <span class="workout__value">${
+              workout.type === "running"
+                ? workout.pace.toFixed(1)
+                : workout.speed.toFixed(1)
+            }</span>
+            <span class="workout__unit">${
+              workout.type === "running" ? " min/km" : "km/h"
+            }</span>
+          </div>
+          <div class="workout__details">
+            <span class="workout__icon">${
+              workout.type === "running" ? "🦶🏼" : "⛰"
+            }</span>
+            <span class="workout__value">${
+              workout.type === "running"
+                ? workout.cadence
+                : workout.elevationGain
+            }</span>
+            <span class="workout__unit">${
+              workout.type === "running" ? "spm" : "m"
+            }</span>
+          </div>
+     </li>
+          `;
+
+    this.form.insertAdjacentHTML("afterend", html);
   }
 
   _validateInputs(...inputs) {
